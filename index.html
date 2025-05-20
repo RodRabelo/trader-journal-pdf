@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trader Journal Access PDF</title>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+    h1 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      background-color: #006400;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    img {
+      display: block;
+      margin: 0 auto 20px;
+      max-width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://rodrabelo.gumroad.com/assets/product_pnvott/logo.png" alt="Trader Journal Logo" id="logo" />
+  <h1>Trader Journal - PDF Generator</h1>
+
+  <label for="lang">Language / Idioma / Idioma:</label>
+  <select id="lang">
+    <option value="en">English</option>
+    <option value="pt">Português</option>
+    <option value="es">Español</option>
+  </select>
+
+  <label for="name">Name / Nome / Nombre:</label>
+  <input type="text" id="name" placeholder="e.g. João / John / Juan" />
+
+  <label for="key">License Key / Chave de Acesso / Clave de Licencia:</label>
+  <input type="text" id="key" placeholder="e.g. xxxxx-xxxxx-xxxxx" />
+
+  <button onclick="generatePDF()">Gerar PDF / Generate PDF / Generar PDF</button>
+
+  <script>
+    async function generatePDF() {
+      const name = document.getElementById("name").value;
+      const key = document.getElementById("key").value;
+      const lang = document.getElementById("lang").value;
+
+      if (!name || !key) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const { PDFDocument, rgb, StandardFonts } = PDFLib;
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([595, 842]);
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const logoUrl = "https://raw.githubusercontent.com/openai/images/main/traderjournal_logo.png"; // backup logo
+
+      const content = {
+        en: {
+          title: "Trader Journal Access",
+          greeting: `Hello ${name},`,
+          intro: "Thank you for purchasing Trader Journal!",
+          linkText: "Access your project here:",
+          link: "https://traderjournal.lovable.app/",
+          licenseLabel: "Your access key:",
+          outro: "Use this key to unlock the journal when prompted.",
+        },
+        pt: {
+          title: "Acesso ao Trader Journal",
+          greeting: `Olá ${name},`,
+          intro: "Obrigado por adquirir o Trader Journal!",
+          linkText: "Acesse seu projeto aqui:",
+          link: "https://traderjournal.lovable.app/",
+          licenseLabel: "Sua chave de acesso:",
+          outro: "Use esta chave para desbloquear o conteúdo quando solicitado.",
+        },
+        es: {
+          title: "Acceso a Trader Journal",
+          greeting: `Hola ${name},`,
+          intro: "¡Gracias por comprar el Trader Journal!",
+          linkText: "Accede a tu proyecto aquí:",
+          link: "https://traderjournal.lovable.app/",
+          licenseLabel: "Tu clave de acceso:",
+          outro: "Utiliza esta clave para desbloquear el contenido cuando se solicite.",
+        }
+      };
+
+      const data = content[lang];
+
+      const drawText = (text, y) => {
+        page.drawText(text, {
+          x: 50,
+          y,
+          size: 12,
+          font,
+          color: rgb(0, 0, 0),
+        });
+      };
+
+      let y = 750;
+      page.drawText(data.title, {
+        x: 50,
+        y,
+        size: 20,
+        font,
+        color: rgb(0, 0.4, 0),
+      });
+
+      y -= 40;
+      drawText(data.greeting, y -= 20);
+      drawText("", y -= 20);
+      drawText(data.intro, y -= 20);
+      drawText(data.linkText, y -= 20);
+      drawText(data.link, y -= 20);
+      drawText("", y -= 20);
+      drawText(data.licenseLabel, y -= 20);
+      drawText(key, y -= 20);
+      drawText("", y -= 20);
+      drawText(data.outro, y -= 20);
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `Trader-Journal-${name}.pdf`;
+      link.click();
+    }
+  </script>
+</body>
+</html>
