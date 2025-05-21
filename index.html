@@ -59,7 +59,7 @@
       errorMessage.textContent = "";
 
       try {
-        const response = await fetch("chaves.txt");
+        const response = await fetch("https://rodrabelo.github.io/trader-journal-pdf/chaves.txt");
         if (!response.ok) {
           throw new Error("Error loading license file.");
         }
