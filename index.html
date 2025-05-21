@@ -65,11 +65,10 @@
         }
 
         const text = await response.text();
-       const keys = text.replace(/\r/g, '').split("\n").map(k => k.trim().toUpperCase());
-
+        const keys = text.split("\n").map(k => k.trim().toUpperCase());
 
         if (keys.includes(key)) {
-          window.location.href = "conteudo.html"; // ✅ página protegida
+          window.location.href = "conteudo.html"; // ou outro destino protegido
         } else {
           errorMessage.textContent = "Invalid license key. Please check and try again.";
         }
