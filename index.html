@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Access Trader Journal</title>
+  <script src="chaves.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -53,28 +54,20 @@
   </div>
 
   <script>
-    async function validateKey() {
+    function validateKey() {
       const key = document.getElementById('licenseKey').value.trim().toUpperCase();
       const errorMessage = document.getElementById('errorMessage');
       errorMessage.textContent = "";
 
-      try {
-        const response = await fetch("./chaves_trader_journal_5000.txt");
-        if (!response.ok) {
-          throw new Error("Error loading license file.");
-        }
+      if (typeof chavesValidas === 'undefined') {
+        errorMessage.textContent = "License validation system not loaded.";
+        return;
+      }
 
-        const text = await response.text();
-        const keys = text.split("\n").map(k => k.trim().toUpperCase());
-
-        if (keys.includes(key)) {
-          window.location.href = "conteudo.html"; // ou outro destino protegido
-        } else {
-          errorMessage.textContent = "Invalid license key. Please check and try again.";
-        }
-      } catch (err) {
-        errorMessage.textContent = "There was a problem validating your key.";
-        console.error(err);
+      if (chavesValidas.includes(key)) {
+        window.location.href = "conteudo.html"; // Substitua pelo seu arquivo protegido
+      } else {
+        errorMessage.textContent = "Invalid license key. Please check and try again.";
       }
     }
   </script>
