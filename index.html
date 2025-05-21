@@ -65,7 +65,8 @@
         }
 
         const text = await response.text();
-        const keys = text.split("\n").map(k => k.trim().toUpperCase());
+       const keys = text.replace(/\r/g, '').split("\n").map(k => k.trim().toUpperCase());
+
 
         if (keys.includes(key)) {
           window.location.href = "conteudo.html"; // ✅ página protegida
